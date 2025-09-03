@@ -1,3 +1,3 @@
 print("Hello world")
-a = bit
-print(f"Hello {a}")
+name = "Bit"
+print(f"Hello {name}!")
