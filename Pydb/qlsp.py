@@ -110,7 +110,7 @@ def calculate_total_price():
     conn = sqlite3.connect('products.db')
     cursor = conn.cursor()
     cursor.execute('SELECT SUM(gia) FROM products')
-    total = cursor.fetchone()[0]
+    total = int(cursor.fetchone()[0])
     conn.close()
     entry_sum.delete(0, tk.END)
     entry_sum.insert(0, str(total) if total is not None else "0")
