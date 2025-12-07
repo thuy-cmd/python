@@ -5,6 +5,8 @@ import sqlite3
 # ============================
 # TẠO STYLE LUNG LINH
 # ============================
+
+
 def apply_style(root, dark=True):
     style = ttk.Style(root)
 
@@ -15,7 +17,7 @@ def apply_style(root, dark=True):
         button_bg = "#3a3a3a"
         list_bg = "#2d2d2d"
     else:
-        bg = "#f2f2f2"
+        bg = "#020101"
         fg = "black"
         entry_bg = "white"
         button_bg = "#e6e6e6"
@@ -23,15 +25,19 @@ def apply_style(root, dark=True):
 
     root.configure(bg=bg)
     style.configure("TFrame", background=bg)
-    style.configure("TLabelframe", background=bg, foreground=fg, font=("Segoe UI", 12, "bold"))
-    style.configure("TLabel", background=bg, foreground=fg, font=("Segoe UI", 11))
+    style.configure("TLabelframe", background=bg,
+                    foreground=fg, font=("Segoe UI", 12, "bold"))
+    style.configure("TLabel", background=bg,
+                    foreground=fg, font=("Segoe UI", 11))
     style.configure("TButton", font=("Segoe UI Semibold", 11), padding=6)
     style.map("TButton",
               background=[("active", "#4CAF50"), ("!active", button_bg)],
               foreground=[("active", "white")])
 
-    style.configure("TEntry", padding=5, fieldbackground=entry_bg, foreground=fg)
-    style.configure("TCombobox", fieldbackground=entry_bg, background=entry_bg, foreground=fg)
+    style.configure("TEntry", padding=5,
+                    fieldbackground=entry_bg, foreground=fg)
+    style.configure("TCombobox", fieldbackground=entry_bg,
+                    background=entry_bg, foreground=fg)
 
     root.list_bg = list_bg
 
@@ -40,6 +46,8 @@ def apply_style(root, dark=True):
 # CHUYỂN ĐỔI DARK/LIGHT MODE
 # ============================
 dark_mode = True
+
+
 def toggle_mode():
     global dark_mode
     dark_mode = not dark_mode
@@ -72,10 +80,12 @@ def show_products():
     listbox.delete(0, tk.END)
     conn = sqlite3.connect('products.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT masp, tensp, congty, gia FROM products ORDER BY id DESC')
+    cursor.execute(
+        'SELECT masp, tensp, congty, gia FROM products ORDER BY id DESC')
     for product in cursor.fetchall():
         listbox.insert(tk.END, product[0])
     conn.close()
+
 
 def show_selected_product(event):
     selected = listbox.curselection()
@@ -84,14 +94,20 @@ def show_selected_product(event):
     masp = listbox.get(selected[0]).strip()
     conn = sqlite3.connect('products.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT masp, tensp, congty, gia FROM products WHERE masp = ?', (masp,))
+    cursor.execute(
+        'SELECT masp, tensp, congty, gia FROM products WHERE masp = ?', (masp,))
     product = cursor.fetchone()
     conn.close()
     if product:
-        entry_masp.delete(0, tk.END); entry_masp.insert(0, product[0])
-        entry_tensp.delete(0, tk.END); entry_tensp.insert(0, product[1])
-        entry_congty.delete(0, tk.END); entry_congty.insert(0, product[2])
-        entry_gia.delete(0, tk.END); entry_gia.insert(0, str(product[3]))
+        entry_masp.delete(0, tk.END)
+        entry_masp.insert(0, product[0])
+        entry_tensp.delete(0, tk.END)
+        entry_tensp.insert(0, product[1])
+        entry_congty.delete(0, tk.END)
+        entry_congty.insert(0, product[2])
+        entry_gia.delete(0, tk.END)
+        entry_gia.insert(0, str(product[3]))
+
 
 def find_product():
     masp = entry_masp_tim.get().strip()
@@ -101,15 +117,20 @@ def find_product():
 
     conn = sqlite3.connect('products.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT masp, tensp, congty, gia FROM products WHERE masp = ?', (masp,))
+    cursor.execute(
+        'SELECT masp, tensp, congty, gia FROM products WHERE masp = ?', (masp,))
     product = cursor.fetchone()
     conn.close()
 
     if product:
-        entry_masp.delete(0, tk.END); entry_masp.insert(0, product[0])
-        entry_tensp.delete(0, tk.END); entry_tensp.insert(0, product[1])
-        entry_congty.delete(0, tk.END); entry_congty.insert(0, product[2])
-        entry_gia.delete(0, tk.END); entry_gia.insert(0, str(product[3]))
+        entry_masp.delete(0, tk.END)
+        entry_masp.insert(0, product[0])
+        entry_tensp.delete(0, tk.END)
+        entry_tensp.insert(0, product[1])
+        entry_congty.delete(0, tk.END)
+        entry_congty.insert(0, product[2])
+        entry_gia.delete(0, tk.END)
+        entry_gia.insert(0, str(product[3]))
 
         for i in range(listbox.size()):
             if listbox.get(i) == masp:
@@ -118,7 +139,9 @@ def find_product():
                 listbox.see(i)
                 break
     else:
-        messagebox.showinfo("Không tìm thấy", f"Sản phẩm mã {masp} không tồn tại.")
+        messagebox.showinfo(
+            "Không tìm thấy", f"Sản phẩm mã {masp} không tồn tại.")
+
 
 def delete_product():
     selected = listbox.curselection()
@@ -145,6 +168,7 @@ def delete_product():
     show_products()
     messagebox.showinfo("Thành công", "Đã xóa sản phẩm.")
 
+
 def calculate_total_price():
     conn = sqlite3.connect('products.db')
     cursor = conn.cursor()
@@ -154,6 +178,7 @@ def calculate_total_price():
 
     entry_sum.delete(0, tk.END)
     entry_sum.insert(0, str(total if total else 0))
+
 
 def add_product():
     masp = entry_masp.get().strip()
@@ -243,20 +268,25 @@ frame_controls.grid(row=1, column=0, columnspan=2, sticky="ew")
 for i in range(4):
     frame_controls.columnconfigure(i, weight=1)
 
-ttk.Button(frame_controls, text="➕ Thêm", command=add_product).grid(row=0, column=0, padx=5, pady=5, sticky="ew")
-ttk.Button(frame_controls, text="🗑 Xóa", command=delete_product).grid(row=0, column=1, padx=5, pady=5, sticky="ew")
-ttk.Button(frame_controls, text="🔍 Tìm", command=find_product).grid(row=0, column=2, padx=5, pady=5, sticky="ew")
+ttk.Button(frame_controls, text="➕ Thêm", command=add_product).grid(
+    row=0, column=0, padx=5, pady=5, sticky="ew")
+ttk.Button(frame_controls, text="🗑 Xóa", command=delete_product).grid(
+    row=0, column=1, padx=5, pady=5, sticky="ew")
+ttk.Button(frame_controls, text="🔍 Tìm", command=find_product).grid(
+    row=0, column=2, padx=5, pady=5, sticky="ew")
 
 entry_masp_tim = ttk.Entry(frame_controls)
 entry_masp_tim.grid(row=0, column=3, padx=5, pady=5, sticky="ew")
 
-ttk.Button(frame_controls, text="💰 Tổng giá", command=calculate_total_price).grid(row=1, column=0, padx=5, pady=5, sticky="ew")
+ttk.Button(frame_controls, text="💰 Tổng giá", command=calculate_total_price).grid(
+    row=1, column=0, padx=5, pady=5, sticky="ew")
 
 entry_sum = ttk.Entry(frame_controls)
 entry_sum.grid(row=1, column=1, columnspan=3, padx=5, pady=5, sticky="ew")
 
 # Nút chuyển đổi theme
-ttk.Button(frame_controls, text="🌗 Chế độ sáng / tối", command=toggle_mode).grid(row=2, column=0, columnspan=4, padx=5, pady=10, sticky="ew")
+ttk.Button(frame_controls, text="🌗 Chế độ sáng / tối", command=toggle_mode).grid(row=2,
+                                                                                 column=0, columnspan=4, padx=5, pady=10, sticky="ew")
 
 # Load danh sách ban đầu
 show_products()

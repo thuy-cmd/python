@@ -14,15 +14,18 @@ cursor.execute('''
     )
 ''')
 
+
 def show_products():
     listbox.delete(0, tk.END)
     conn = sqlite3.connect('products.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT masp, tensp, congty, gia FROM products ORDER BY id DESC')
+    cursor.execute(
+        'SELECT masp, tensp, congty, gia FROM products ORDER BY id DESC')
     products = cursor.fetchall()
     for product in products:
         listbox.insert(tk.END, product[0])
     conn.close()
+
 
 def show_selected_product(event):
     selected = listbox.curselection()
@@ -33,7 +36,8 @@ def show_selected_product(event):
 
     conn = sqlite3.connect('products.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT masp, tensp, congty, gia FROM products WHERE masp = ?', (masp,))
+    cursor.execute(
+        'SELECT masp, tensp, congty, gia FROM products WHERE masp = ?', (masp,))
     product = cursor.fetchone()
     conn.close()
 
@@ -60,7 +64,8 @@ def find_product():
     conn = sqlite3.connect('products.db')
     cursor = conn.cursor()
 
-    cursor.execute('SELECT masp, tensp, congty, gia FROM products WHERE masp = ?', (masp,))
+    cursor.execute(
+        'SELECT masp, tensp, congty, gia FROM products WHERE masp = ?', (masp,))
     product = cursor.fetchone()
     if product:
         entry_masp.delete(0, tk.END)
@@ -78,8 +83,10 @@ def find_product():
                 listbox.see(i)
                 break
     else:
-        messagebox.showinfo("Không tìm thấy", f"Sản phẩm với mã {masp} không tồn tại.")
+        messagebox.showinfo(
+            "Không tìm thấy", f"Sản phẩm với mã {masp} không tồn tại.")
     conn.close()
+
 
 def delete_product():
     conn = sqlite3.connect('products.db')
@@ -90,7 +97,8 @@ def delete_product():
         messagebox.showwarning("Lỗi", "Vui lòng chọn sản phẩm để xóa.")
         return
 
-    isDelete = messagebox.askyesno("Xác nhận", "Bạn có chắc chắn muốn xóa sản phẩm này không?")
+    isDelete = messagebox.askyesno(
+        "Xác nhận", "Bạn có chắc chắn muốn xóa sản phẩm này không?")
     if not isDelete:
         conn.close()
         return
@@ -99,12 +107,14 @@ def delete_product():
         cursor.execute('DELETE FROM products WHERE masp = ?', (masp,))
         conn.commit()
         conn.close()
-        messagebox.showinfo("Thành công", "Đã xóa sản phẩm khỏi cơ sở dữ liệu.")
+        messagebox.showinfo(
+            "Thành công", "Đã xóa sản phẩm khỏi cơ sở dữ liệu.")
         entry_masp.delete(0, tk.END)
         entry_tensp.delete(0, tk.END)
         entry_congty.delete(0, tk.END)
         entry_gia.delete(0, tk.END)
         show_products()
+
 
 def calculate_total_price():
     conn = sqlite3.connect('products.db')
@@ -114,6 +124,7 @@ def calculate_total_price():
     conn.close()
     entry_sum.delete(0, tk.END)
     entry_sum.insert(0, str(total) if total is not None else "0")
+
 
 def add_product():
     masp = entry_masp.get().strip()
@@ -146,7 +157,8 @@ def add_product():
         cursor.execute('INSERT INTO products (masp, tensp, congty, gia) VALUES (?, ?, ?, ?)',
                        (masp, tensp, congty, gia))
         conn.commit()
-        messagebox.showinfo("Thành công", "Đã thêm sản phẩm vào cơ sở dữ liệu.")
+        messagebox.showinfo(
+            "Thành công", "Đã thêm sản phẩm vào cơ sở dữ liệu.")
     except sqlite3.IntegrityError:
         messagebox.showwarning("Lỗi", "Mã sản phẩm đã tồn tại.")
     finally:
@@ -157,6 +169,7 @@ def add_product():
     entry_congty.delete(0, tk.END)
     entry_gia.delete(0, tk.END)
     show_products()
+
 
 root = tk.Tk()
 root.title("Quản lý sản phẩm")
@@ -183,11 +196,11 @@ for c in range(5):
 frame_input.columnconfigure(1, weight=1)
 
 frame_controls = ttk.Frame(root, padding="10")
-frame_controls.grid(row=1, column=0, columnspan=2, sticky="ew", padx=10, pady=10)
+frame_controls.grid(row=1, column=0, columnspan=2,
+                    sticky="ew", padx=10, pady=10)
 
 frame_controls.columnconfigure(0, weight=1)
 frame_controls.columnconfigure(1, weight=1)
-
 
 label_list = ttk.Label(frame_list, text="Danh sách sản phẩm:")
 label_list.grid(row=0, column=0, pady=10)
@@ -219,18 +232,22 @@ label_gia.grid(row=4, column=0, pady=10)
 entry_gia = ttk.Entry(frame_input)
 entry_gia.grid(row=4, column=1, padx=10, pady=10, sticky="ew")
 
-button_add = ttk.Button(frame_controls, text="Thêm sản phẩm", command=add_product)
+button_add = ttk.Button(
+    frame_controls, text="Thêm sản phẩm", command=add_product)
 button_add.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
-button_delete = ttk.Button(frame_controls, text="Xóa sản phẩm", command=delete_product)
+button_delete = ttk.Button(
+    frame_controls, text="Xóa sản phẩm", command=delete_product)
 button_delete.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
 
-button_tim = ttk.Button(frame_controls, text="Tìm sản phẩm theo mã", command=find_product)
+button_tim = ttk.Button(
+    frame_controls, text="Tìm sản phẩm theo mã", command=find_product)
 button_tim.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
 entry_masp_tim = ttk.Entry(frame_controls)
 entry_masp_tim.grid(row=0, column=3, padx=10, pady=10, sticky="ew")
 
-button_sum = ttk.Button(frame_controls, text="Tổng giá sản phẩm", command=calculate_total_price)
+button_sum = ttk.Button(
+    frame_controls, text="Tổng giá sản phẩm", command=calculate_total_price)
 button_sum.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
 entry_sum = ttk.Entry(frame_controls)
 entry_sum.grid(row=1, column=1, padx=10, pady=10, sticky="ew", columnspan=3)
