@@ -1,2 +1,1 @@
-
-    root = tk.Tk()
+student_manager.py
